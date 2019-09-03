@@ -8,7 +8,7 @@
     },
     "content_scripts": [
       {
-        "matches": [ "https://att.elma-bpm.ru/*", "http://localhost:1111/page.html" ],
+        "matches": [ "https://att.elma-bpm.ru/*", "http://localhost:1111/test_pages/**" ],
         "js": ["jquery-1.12.4.min.js", "content.js" ]
       }
     ],
@@ -17,7 +17,7 @@
     },
     "permissions": [
       "https://att.elma-bpm.ru/*",
-      "http://localhost:1111/page.html",
+      "http://localhost:1111/test_pages/**",
       "tabs",
       "activeTab"
     ],

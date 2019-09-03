@@ -10,11 +10,14 @@ console.log(subject);
 console.log("=======");
 
 try {
-    var questionType = document.querySelectorAll("[name=answer_value]")[0].getAttribute("type");
-    console.log("Тип вопроса: " + questionType);
+    var questionType = document.querySelectorAll("[name=answer_value]")[0].getAttribute("type");    
 } catch (error) {
-    console.error(error);
+    var questionType = document.querySelectorAll("[name='answer_value[]']")[0].getAttribute("type");    
 }
+
+questionType = questionType == null ? "textarea" : questionType;
+console.log("Тип вопроса: " + questionType);
+
 
 console.log("=======");
 
@@ -50,7 +53,7 @@ try {
     var answersLabels = document.querySelectorAll(".answer-text");
 
     answersLabels.forEach(function (item, index, arr) {
-        var answer_id = item.getAttribute("for").slice(5);
+        var answer_id = item.getAttribute("for").slice(questionType.length);
         var answer_text = item.innerHTML.replace(/\s+/g, ' ').trim();;
         console.log("ID ответа: " + answer_id);
         console.log(answer_text);
