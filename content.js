@@ -1,19 +1,4 @@
 
-//================================================== CHECKING IF CONNECTED ===========================
-
-
-// document.body.style.backgroundColor = "yellow";
-// var titles = document.querySelectorAll("h2");
-
-// titles.forEach(function(item, i, arr){
-    
-//     item.style.color = "red";
-// })
-
-// $(".records-history").click(function(){
-//     $(this).slideUp();
-// });
-
 // ============================================================== PARSING ===========================================
 
 console.log("=======");
@@ -24,8 +9,12 @@ console.log(subject);
 
 console.log("=======");
 
-var questionType = document.querySelectorAll("[name=answer_value]")[0].getAttribute("type");
-console.log("Тип вопроса: " + questionType);
+try {
+    var questionType = document.querySelectorAll("[name=answer_value]")[0].getAttribute("type");
+    console.log("Тип вопроса: " + questionType);
+} catch (error) {
+    console.error(error);
+}
 
 console.log("=======");
 
@@ -43,9 +32,9 @@ console.log("ID вопроса: " + questionId);
 console.log("=======");
 console.log("=======");
 
-var answersLabels = document.querySelectorAll(".answer-text");
 
 
+//======================================================= GENERATING JS OBJECT FOR CONVERTING TO JSON =============================
 
 var object_info = {
     subject: subject,
@@ -57,16 +46,20 @@ var object_info = {
     }
 }
 
+try {
+    var answersLabels = document.querySelectorAll(".answer-text");
 
-answersLabels.forEach(function(item, index, arr){
-    var answer_id = item.getAttribute("for").slice(5);
-    var answer_text = item.innerHTML.replace(/\s+/g,' ').trim();;
-    console.log("ID ответа: " + answer_id);
-    console.log(answer_text);
-    console.log("=======");
-    object_info.answers[answer_id] = answer_text;
-});
-
+    answersLabels.forEach(function (item, index, arr) {
+        var answer_id = item.getAttribute("for").slice(5);
+        var answer_text = item.innerHTML.replace(/\s+/g, ' ').trim();;
+        console.log("ID ответа: " + answer_id);
+        console.log(answer_text);
+        console.log("=======");
+        object_info.answers[answer_id] = answer_text;
+    });
+} catch (error) {
+    console.error(error);
+}
 
 // ============================================================== AJAX ===========================================
     $.ajax({
@@ -75,30 +68,28 @@ answersLabels.forEach(function(item, index, arr){
         type: 'post',
         datatype: 'json',
 
-        success: function (html) {
+        success: function (answer_info) {
             
-            
-            if(html != "new"){
+            //for debug
+            //alert(answer_info);
+
+            answer_info = JSON.parse(answer_info);
+
+            if(answer_info.error !== undefined){
+                console.error(answer_info.error);
+            } else if (!answer_info.already_contains){
+                console.success("Вопрос добавлен в базу");
+            } else {                
+
                 document.querySelectorAll(".answers > div > input").forEach(function(item, i, arr){
-                    if(item.value == html){
+                    if(answer_info.answer_ids.includes(item.value)){
                          item.parentNode.style.backgroundColor = "lightgreen";
                      }
                 });
-             }
+
+
+            }
             
-            // html = JSON.parse(html);
-            // if(html.errors)
-            // {
-            //     $('.showRegError').html('');
-            //     i = 0;
-            //     for (i = 0; i < html.errors.length; i++) {
-            //         $('.showRegError').append('<li>' + html.errors[i] + '</li>');
-            //     }
-            // }
-            // else if(html.success)
-            // {
-            //     $('.showSuccess').html('html.success');
-            // }
         }
     })
 
