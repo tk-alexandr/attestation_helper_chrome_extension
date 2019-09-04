@@ -8,7 +8,7 @@
     },
     "content_scripts": [
       {
-        "matches": [ "https://att.elma-bpm.ru/*", "http://localhost:1111/test_pages/**" ],
+        "matches": [ "https://att.elma-bpm.ru/*", "https://att.elma-bpm.ru/**/*", "http://localhost:1111/test_pages/**", "http://localhost/**/*"],
         "all frames": true,
         "js": ["jquery-1.12.4.min.js", "content.js" ]
       }
@@ -17,10 +17,13 @@
       "scripts": ["jquery-1.12.4.min.js", "background.js"]
     },
     "permissions": [
-      "https://att.elma-bpm.ru/*",
+      "https://att.elma-bpm.ru/*", 
+      "https://att.elma-bpm.ru/**/*",
       "http://localhost:1111/test_pages/**",
+      "http://localhost/**/*",
       "tabs",
-      "activeTab"
+      "activeTab",
+      "storage"
     ],
   
         "browser_action": {
