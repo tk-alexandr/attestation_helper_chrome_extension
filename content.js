@@ -1,4 +1,4 @@
-
+alert(localStorage['hint_checkbox_state']);
 // ============================================================== PARSING ===========================================
 
 console.log("=======");
@@ -83,7 +83,7 @@ try {
         success: function (answer_info) {
             
             //for debug
-            //alert(answer_info);
+            alert(answer_info);
 
             answer_info = JSON.parse(answer_info);
 
