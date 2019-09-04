@@ -2,6 +2,14 @@
 // ============================================================== PARSING ===========================================
 
 console.log("=======");
+var link = document.querySelector('#test-question').getAttribute('action');
+var start_id_index = "https://att.elma-bpm.ru/testing/".length;
+var len_id = link.slice(start_id_index).indexOf('/');
+
+var test_id = link.substr(start_id_index, len_id);
+console.log("Id компетенции: " + test_id);
+
+console.log("=======");
 
 var subject = document.querySelector(".testing-heading > div > span > b").innerHTML;
 
@@ -40,6 +48,7 @@ console.log("=======");
 //======================================================= GENERATING JS OBJECT FOR CONVERTING TO JSON =============================
 
 var object_info = {
+    test: test_id,
     subject: subject,
     type: questionType,
     question_id: questionId,
