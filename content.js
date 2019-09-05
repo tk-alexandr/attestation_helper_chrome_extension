@@ -1,9 +1,49 @@
+;
+var target_address = 'http://localhost:1111/';
+
 
 if (document.querySelector('.records-history > h2') != null) {
 
     console.log("=======");
     console.log('Вы на странице записи на аттестацию');
     console.log("=======");
+
+    comp_info = {
+        competencies: {}
+    }
+    // ============================================================ READ FROM Previous Attempts ==============================
+
+    try {
+        document.querySelectorAll(".table-user-history > a").forEach(function (item, i, arr) {
+            var link = item.getAttribute('href');
+            link = new URL(link, window.location.href).href;
+            var target = "/attempt/";
+            var start_id_index = link.indexOf(target) + target.length;
+            var len_id = link.slice(start_id_index).indexOf('/');
+
+            var compet_id = link.substr(start_id_index, len_id);
+
+            var compet_name = item.getElementsByTagName('div')[1].innerHTML;
+
+            console.log("=======");
+            console.log('Компетенция: ' + compet_name);
+            console.log('Id компетенции: ' + compet_id);
+            console.log("=======");
+
+            comp_info.competencies[compet_id] = compet_name;
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
+    // ============================================================== AJAX ===========================================
+    $.ajax({
+        url: target_address + "add_competence.php",
+        data: comp_info,
+        type: 'post',
+        datatype: 'jsonp'
+    });
+
 
 } else if (document.querySelector('.skip-question') != null) {
 
@@ -15,7 +55,9 @@ if (document.querySelector('.records-history > h2') != null) {
 
 
     var link = document.querySelector('#test-question').getAttribute('action');
-    var start_id_index = "https://att.elma-bpm.ru/testing/".length;
+    link = new URL(link, window.location.href).href;
+    var target = "/testing/";
+    var start_id_index = link.indexOf(target) + target.length;
     var len_id = link.slice(start_id_index).indexOf('/');
 
     var test_id = link.substr(start_id_index, len_id);
@@ -65,9 +107,7 @@ if (document.querySelector('.records-history > h2') != null) {
         type: questionType,
         question_id: questionId,
         question_text: question,
-        answers: {
-
-        }
+        answers: {}
     }
 
     try {
@@ -87,15 +127,12 @@ if (document.querySelector('.records-history > h2') != null) {
 
     // ============================================================== AJAX ===========================================
     $.ajax({
-        url: 'http://localhost:1111',
+        url: target_address,
         data: object_info,
         type: 'post',
         datatype: 'json',
 
         success: function (answer_info) {
-
-            //for debug
-            alert(answer_info);
 
             answer_info = JSON.parse(answer_info);
 
@@ -105,7 +142,6 @@ if (document.querySelector('.records-history > h2') != null) {
                 console.success("Вопрос добавлен в базу");
             } else {
 
-                //TODO Протестировать
                 chrome.storage.sync.get(['hint_checkbox_state'], function (result) {
                     var res = result.hint_checkbox_state;
                     if (res) {
@@ -114,14 +150,51 @@ if (document.querySelector('.records-history > h2') != null) {
                                 item.parentNode.style.backgroundColor = "lightgreen";
                             }
                         });
+                        if(answer_info.comment != "" && answer_info.comment != null)
+                            createPopup(answer_info.comment);
                     }
                 });
-
-                
-
-
             }
-
         }
     });
+}
+
+function createPopup(text){
+
+    var container = document.createElement("div");  
+    var header = document.createElement("div");
+    var closeButton = document.createElement("a");   
+    var popupBody = document.createElement("div");
+    var textNode = document.createTextNode(text);
+
+    closeButton.href = "#";
+    closeButton.innerHTML = "Закрыть";
+    closeButton.onclick = function(){
+        container.style.display = "none";
+        return false;
+    }
+    
+    container.style.position = "fixed";
+    container.style.right = "3%";
+    container.style.bottom = "5%";
+    container.style.width = "500px";
+    container.style.border = "1px solid black";
+    container.style.background = "white";
+    
+    header.style.textAlign = "right";
+    header.style.padding = "10px";
+    header.style.borderBottom = "1px solid grey";
+
+    popupBody.style.padding = "10px";
+    popupBody.style.width = "100%";
+    popupBody.style.height = "100px";
+    popupBody.style.overflowY = "auto";
+
+
+    header.appendChild(closeButton);
+    popupBody.appendChild(textNode)
+    container.appendChild(header);
+    container.appendChild(popupBody);    
+
+    document.body.appendChild(container);
 }
