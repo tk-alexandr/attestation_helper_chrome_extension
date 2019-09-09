@@ -1,5 +1,5 @@
 ;
-var target_address = 'http://localhost:1111/';
+var target_address = 'http://c96355g5.beget.tech/';
 
 
 if (document.querySelector('.records-history > h2') != null) {
@@ -139,7 +139,7 @@ if (document.querySelector('.records-history > h2') != null) {
             if (answer_info.error !== undefined) {
                 console.error(answer_info.error);
             } else if (!answer_info.already_contains) {
-                console.success("Вопрос добавлен в базу");
+                console.log("Вопрос добавлен в базу");
             } else {
 
                 chrome.storage.sync.get(['hint_checkbox_state'], function (result) {
